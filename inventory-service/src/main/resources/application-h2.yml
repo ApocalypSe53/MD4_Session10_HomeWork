@@ -1,0 +1,10 @@
+# Profile chạy thử không cần PostgreSQL: --spring.profiles.active=h2
+# Dữ liệu nằm trong bộ nhớ, mất khi tắt ứng dụng. Xem DB tại http://localhost:8081/h2-console
+spring:
+  datasource:
+    url: jdbc:h2:mem:inventory_db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true

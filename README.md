@@ -27,6 +27,19 @@ docker compose up -d
 
 Mỗi service là một project Maven độc lập – mở từng thư mục bằng IntelliJ để chạy.
 
+> **Windows 10/11 Home:** Docker Desktop cần WSL2. Nếu `docker version` báo lỗi `500 Internal Server Error`,
+> mở PowerShell **Run as Administrator** chạy `wsl --install`, khởi động lại máy rồi mở lại Docker Desktop.
+
+## Test tự động
+
+```bash
+mvn -f pharmacy-service/pom.xml test       # key medicineId -> cùng partition
+mvn -f inventory-service/pom.xml test      # trừ kho, chống trùng, hết hàng, sai mã thuốc
+mvn -f notification-service/pom.xml test   # gửi email hóa đơn đúng người nhận/nội dung
+```
+
+Test dùng Embedded Kafka (+ H2 cho inventory), không cần Docker.
+
 ---
 
 ## Bài 1 – Thiết lập hạ tầng và Quản lý Topic

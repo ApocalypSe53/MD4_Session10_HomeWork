@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pharmacy-service
+  kafka:
+    # Dùng chung cho KafkaTemplate (Producer) và KafkaAdmin (tạo topic)
+    bootstrap-servers: localhost:9092
+
+app:
+  kafka:
+    topics:
+      medicine-stock-events: medicine-stock-events

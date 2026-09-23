@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hiệu thuốc - Thanh toán</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+        label { display: block; margin-top: 12px; font-weight: 600; }
+        input, select { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+        button { margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background: #1a7f37;
+                 color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+        button:disabled { opacity: .6; }
+        pre { background: #f4f4f4; padding: 12px; border-radius: 6px; white-space: pre-wrap; }
+        .ok { color: #1a7f37; } .err { color: #c62828; }
+    </style>
+</head>
+<body>
+<h2>Bán thuốc</h2>
+<form id="form">
+    <label>Mã thuốc
+        <select id="medicineId">
+            <option value="MED-001">MED-001 - Paracetamol 500mg</option>
+            <option value="MED-002">MED-002 - Amoxicillin 250mg</option>
+            <option value="MED-003">MED-003 - Vitamin C 1000mg</option>
+            <option value="MED-004">MED-004 - Berberin</option>
+        </select>
+    </label>
+    <label>Số lượng
+        <input id="quantity" type="number" min="1" value="1">
+    </label>
+    <label>Tên khách hàng
+        <input id="customerName" type="text" placeholder="Nguyễn Văn A">
+    </label>
+    <label>Email nhận hóa đơn
+        <input id="customerEmail" type="email" placeholder="khachhang@example.com">
+    </label>
+    <button id="btn" type="submit">Thanh toán</button>
+</form>
+<h3 id="status"></h3>
+<pre id="result" hidden></pre>
+
+<script>
+    const form = document.getElementById('form');
+    const btn = document.getElementById('btn');
+    const status = document.getElementById('status');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btn.disabled = true;
+        status.textContent = 'Đang xử lý...';
+        status.className = '';
+        try {
+            const res = await fetch('/api/orders/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    medicineId: document.getElementById('medicineId').value,
+                    quantity: Number(document.getElementById('quantity').value),
+                    customerName: document.getElementById('customerName').value,
+                    customerEmail: document.getElementById('customerEmail').value
+                })
+            });
+            const data = await res.json();
+            status.textContent = data.message;
+            status.className = res.ok ? 'ok' : 'err';
+            result.textContent = JSON.stringify(data, null, 2);
+            result.hidden = false;
+        } catch (err) {
+            status.textContent = 'Không kết nối được tới server';
+            status.className = 'err';
+        } finally {
+            btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

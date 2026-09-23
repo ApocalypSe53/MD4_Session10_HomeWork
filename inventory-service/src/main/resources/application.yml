@@ -1,0 +1,51 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: inventory-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory_db
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: none        # schema do schema.sql quản lý
+    open-in-view: false
+
+  sql:
+    init:
+      mode: always          # chạy schema.sql + data.sql mỗi lần khởi động (idempotent)
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      # Mọi instance inventory-service dùng chung group-id -> mỗi partition chỉ được 1 consumer
+      # trong group đọc, nên một sự kiện không bị nhiều instance cùng xử lý.
+      group-id: inventory-service-group
+      auto-offset-reset: earliest
+      # Tắt auto commit: offset chỉ được commit SAU KHI xử lý DB xong (at-least-once)
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # ErrorHandlingDeserializer bọc JsonDeserializer: message JSON lỗi không làm consumer bị kẹt
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        # Producer không gửi header kiểu class -> chỉ định kiểu mặc định để map JSON
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.pharmacy.inventory.event.OrderEvent
+        spring.json.trusted.packages: com.pharmacy.inventory.event
+    listener:
+      ack-mode: record      # commit offset sau từng message xử lý thành công
+      concurrency: 3        # 3 luồng consumer <-> 3 partition của medicine-stock-events
+
+app:
+  kafka:
+    topics:
+      medicine-stock-events: medicine-stock-events
+
+logging:
+  level:
+    org.apache.kafka: warn

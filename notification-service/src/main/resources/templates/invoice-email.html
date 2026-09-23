@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hóa đơn điện tử</title>
+</head>
+<body style="margin:0;padding:24px;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;color:#222;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="560" cellspacing="0" cellpadding="0"
+                   style="max-width:560px;width:100%;background:#fff;border-radius:8px;overflow:hidden;">
+                <tr>
+                    <td style="background:#1a7f37;color:#fff;padding:20px 24px;">
+                        <h2 style="margin:0;">Nhà thuốc Pharmacy</h2>
+                        <p style="margin:4px 0 0;">HÓA ĐƠN ĐIỆN TỬ</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:24px;">
+                        <p>Xin chào <b th:text="${customerName}">Quý khách</b>,</p>
+                        <p>Cảm ơn bạn đã mua hàng. Dưới đây là thông tin đơn hàng của bạn:</p>
+
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="8"
+                               style="border-collapse:collapse;border:1px solid #e0e0e0;">
+                            <tr style="background:#f7f7f7;">
+                                <td style="border:1px solid #e0e0e0;width:40%;"><b>Mã đơn hàng</b></td>
+                                <td style="border:1px solid #e0e0e0;" th:text="${order.orderId}">ORDER-ID</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #e0e0e0;"><b>Mã thuốc</b></td>
+                                <td style="border:1px solid #e0e0e0;" th:text="${order.medicineId}">MED-001</td>
+                            </tr>
+                            <tr style="background:#f7f7f7;">
+                                <td style="border:1px solid #e0e0e0;"><b>Số lượng</b></td>
+                                <td style="border:1px solid #e0e0e0;" th:text="${order.quantity}">1</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #e0e0e0;"><b>Thời gian</b></td>
+                                <td style="border:1px solid #e0e0e0;" th:text="${orderTime}">00:00 01/01/2026</td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:24px;color:#666;font-size:13px;">
+                            Đây là email tự động từ notification-service, vui lòng không trả lời email này.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
